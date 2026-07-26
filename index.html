@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chúc Ngủ Ngon! 🌙</title>
+    <title>Chúc Ngủ Ngon! 🌙✨</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +23,7 @@
             position: relative;
         }
 
-        /* Hiệu ứng bầu trời sao */
+        /* Bầu trời sao */
         .star {
             position: absolute;
             background-color: #fff;
@@ -36,7 +36,7 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Card chúc ngủ ngon */
+        /* Card thiệp chúc */
         .card {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px);
@@ -48,27 +48,38 @@
             width: 90%;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             z-index: 10;
-            animation: fadeIn 2s ease-in-out;
+            animation: fadeIn 1.5s ease-in-out;
             max-height: 90vh;
             overflow-y: auto;
         }
 
-        /* Khung chứa ảnh */
+        /* Khung hiển thị ảnh */
         .photo-container {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             margin: 0 auto 15px auto;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.6);
+            border: 3px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
             animation: float 3s infinite ease-in-out;
+            cursor: pointer;
+            position: relative;
         }
 
         .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        .photo-hint {
+            font-size: 0.75rem;
+            color: #ffd166;
+            margin-top: -10px;
+            margin-bottom: 12px;
+            opacity: 0.8;
         }
 
         @keyframes float {
@@ -131,7 +142,7 @@
 </head>
 <body>
 
-    <!-- Tạo sao ngẫu nhiên bằng JS -->
+    <!-- Tạo bầu trời sao -->
     <script>
         const starCount = 80;
         for (let i = 0; i < starCount; i++) {
@@ -147,42 +158,61 @@
         }
     </script>
 
-    <!-- Nhạc nền Chúc bé ngủ ngon (dùng link nhạc trực tuyến nhẹ nhàng) -->
+    <!-- Nhạc nền Canon in D in C Major (Bản Piano & Violin du dương) -->
     <audio id="bg-music" loop>
-        <source src="https://ia801509.us.archive.org/19/items/LullabyMozart_201603/Lullaby.mp3" type="audio/mp3">
+        <source src="https://ia800501.us.archive.org/32/items/PachelbelCanonInD_201703/Pachelbel%20-%20Canon%20in%20D.mp3" type="audio/mp3">
     </audio>
 
     <div class="card">
-        <!-- PHẦN ẢNH: Đã điền tên file ảnh từ màn hình của bạn -->
-        <div class="photo-container">
-            <img src="9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg" alt="Ảnh kỷ niệm">
+        <!-- Khung chứa ảnh (Bấm vào ảnh để chuyển giữa 2 ảnh) -->
+        <div class="photo-container" onclick="nextPhoto()">
+            <img id="avatar" src="9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg" alt="Ảnh kỷ niệm">
         </div>
+        <div class="photo-hint">💡 Bấm vào ảnh để đổi hình nhé</div>
 
-        <h1>Chúc Bé Ngủ Ngon Nhé! 🌙✨</h1> 
+        <h1>Chúc Bé Ngủ Ngon! 🌙✨</h1> 
         <p id="wish-text">
             Một ngày dài mệt mỏi trôi qua rồi, hãy gác lại mọi phiền muộn và chìm vào giấc ngủ thật sâu nhé. 
-            Chúc cậu có những giấc mơ thật đẹp và bình yên! 😴💤
+            Chúc cậu có những giấc mơ thật đẹp cùng giai điệu Canon in D! 🎶💤
         </p>
         
         <div class="btn-group">
             <button class="btn" onclick="changeWish()">Đổi lời chúc ❤️</button>
-            <button class="btn btn-music" id="music-btn" onclick="toggleMusic()">🎵 Phát nhạc</button>
+            <button class="btn btn-music" id="music-btn" onclick="toggleMusic()">🎵 Bật nhạc Canon in D</button>
         </div>
     </div>
 
     <script>
+        // Danh sách 2 ảnh trong repo của bạn
+        const images = [
+            "9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg",
+            "715507807_2509813239448736_880324974220"
+        ];
+        let currentImgIndex = 0;
+
+        function nextPhoto() {
+            currentImgIndex = (currentImgIndex + 1) % images.length;
+            const imgEl = document.getElementById('avatar');
+            imgEl.style.opacity = '0';
+            setTimeout(() => {
+                imgEl.src = images[currentImgIndex];
+                imgEl.style.opacity = '1';
+            }, 300);
+        }
+
+        // Đổi câu chúc ngẫu nhiên
         function changeWish() {
             const wishes = [
                 "Mong cậu ngủ thật ngon và ngày mai thức dậy tràn đầy năng lượng! 🌟",
                 "Đừng thức khuya nữa nha, mau gấp chăn đi ngủ thôi nào! 🛌",
-                "Gửi tặng cậu cả bầu trời sao ngọt ngào và giấc mơ đẹp nhất! ✨💖",
-                "Tắt điện thoại, nhắm mắt lại và ngủ thật ngon nhé bé ơi! 🌙"
+                "Gửi tặng cậu cả bầu trời sao ngọt ngào và giấc mơ bình yên nhất! ✨💖",
+                "Tắt điện thoại, nhắm mắt lại và chìm vào giấc ngủ cùng điệu nhạc nhẹ nhàng nhé! 🌙🎶"
             ];
             const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
             document.getElementById('wish-text').innerText = randomWish;
         }
 
-        // Xử lý bật tắt nhạc nền
+        // Xử lý nhạc nền Canon in D
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('music-btn');
         let isPlaying = false;
@@ -190,7 +220,7 @@
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
-                musicBtn.innerText = "🎵 Phát nhạc";
+                musicBtn.innerText = "🎵 Bật nhạc Canon in D";
                 musicBtn.style.background = "linear-gradient(45deg, #4facfe, #00f2fe)";
             } else {
                 music.play().then(() => {
@@ -198,7 +228,7 @@
                     musicBtn.innerText = "🔇 Tắt nhạc";
                     musicBtn.style.background = "linear-gradient(45deg, #ff9966, #ff5e62)";
                 }).catch(e => {
-                    alert("Trình duyệt chặn phát nhạc tự động, bạn hãy bấm lại lần nữa nhé!");
+                    alert("Bạn hãy bấm lại nút một lần nữa để phát nhạc nhé!");
                 });
             }
             isPlaying = !isPlaying;
