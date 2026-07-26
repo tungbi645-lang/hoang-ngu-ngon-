@@ -23,7 +23,7 @@
             position: relative;
         }
 
-        /* Bầu trời sao */
+        /* Bầu trời sao lấp lánh */
         .star {
             position: absolute;
             background-color: #fff;
@@ -34,6 +34,41 @@
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; transform: scale(0.8); }
             50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Màn hình chào để phát nhạc tự động */
+        #welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 29, 58, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #welcome-overlay .envelope {
+            font-size: 80px;
+            animation: pulse 1.5s infinite;
+        }
+
+        #welcome-overlay p {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: #ffd166;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
 
         /* Card thiệp chúc */
@@ -53,33 +88,32 @@
             overflow-y: auto;
         }
 
-        /* Khung hiển thị ảnh */
+        /* Khung chứa 2 ảnh */
+        .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
         .photo-container {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 15px auto;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             overflow: hidden;
             border: 3px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
             animation: float 3s infinite ease-in-out;
-            cursor: pointer;
-            position: relative;
+        }
+
+        .photo-container:nth-child(2) {
+            animation-delay: 1.5s;
         }
 
         .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.5s ease;
-        }
-
-        .photo-hint {
-            font-size: 0.75rem;
-            color: #ffd166;
-            margin-top: -10px;
-            margin-bottom: 12px;
-            opacity: 0.8;
         }
 
         @keyframes float {
@@ -130,10 +164,6 @@
             box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
         }
 
-        .btn-music:hover {
-            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -141,6 +171,12 @@
     </style>
 </head>
 <body>
+
+    <!-- Bìa thư chạm để mở & tự động phát nhạc -->
+    <div id="welcome-overlay" onclick="startExperience()">
+        <div class="envelope">💌</div>
+        <p>Bấm vào đây để mở món quà nhé! ✨</p>
+    </div>
 
     <!-- Tạo bầu trời sao -->
     <script>
@@ -158,17 +194,22 @@
         }
     </script>
 
-    <!-- Nhạc nền Canon in D in C Major (Bản Piano & Violin du dương) -->
-    <audio id="bg-music" loop>
+    <!-- Nhạc Canon in D -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/2/22/Canon_in_D.ogg" type="audio/ogg">
         <source src="https://ia800501.us.archive.org/32/items/PachelbelCanonInD_201703/Pachelbel%20-%20Canon%20in%20D.mp3" type="audio/mp3">
     </audio>
 
     <div class="card">
-        <!-- Khung chứa ảnh (Bấm vào ảnh để chuyển giữa 2 ảnh) -->
-        <div class="photo-container" onclick="nextPhoto()">
-            <img id="avatar" src="9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg" alt="Ảnh kỷ niệm">
+        <!-- 2 ảnh chính xác trên repo của bạn -->
+        <div class="gallery">
+            <div class="photo-container">
+                <img src="9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg" alt="Ảnh 1">
+            </div>
+            <div class="photo-container">
+                <img src="c84e8444-b251-45f0-9f7d-34d91ca2a5c6.jpg" alt="Ảnh 2">
+            </div>
         </div>
-        <div class="photo-hint">💡 Bấm vào ảnh để đổi hình nhé</div>
 
         <h1>Chúc Bé Ngủ Ngon! 🌙✨</h1> 
         <p id="wish-text">
@@ -178,26 +219,28 @@
         
         <div class="btn-group">
             <button class="btn" onclick="changeWish()">Đổi lời chúc ❤️</button>
-            <button class="btn btn-music" id="music-btn" onclick="toggleMusic()">🎵 Bật nhạc Canon in D</button>
+            <button class="btn btn-music" id="music-btn" onclick="toggleMusic()">🔇 Tắt nhạc</button>
         </div>
     </div>
 
     <script>
-        // Danh sách 2 ảnh trong repo của bạn
-        const images = [
-            "9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg",
-            "715507807_2509813239448736_880324974220"
-        ];
-        let currentImgIndex = 0;
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        let isPlaying = false;
 
-        function nextPhoto() {
-            currentImgIndex = (currentImgIndex + 1) % images.length;
-            const imgEl = document.getElementById('avatar');
-            imgEl.style.opacity = '0';
+        // Bật nhạc ngay khi bấm mở thiệp
+        function startExperience() {
+            const overlay = document.getElementById('welcome-overlay');
+            overlay.style.opacity = '0';
             setTimeout(() => {
-                imgEl.src = images[currentImgIndex];
-                imgEl.style.opacity = '1';
-            }, 300);
+                overlay.style.visibility = 'hidden';
+            }, 800);
+
+            music.play().then(() => {
+                isPlaying = true;
+            }).catch(err => {
+                console.log("Lỗi tự động phát: ", err);
+            });
         }
 
         // Đổi câu chúc ngẫu nhiên
@@ -212,26 +255,19 @@
             document.getElementById('wish-text').innerText = randomWish;
         }
 
-        // Xử lý nhạc nền Canon in D
-        const music = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-btn');
-        let isPlaying = false;
-
+        // Xử lý bật/tắt nhạc
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
-                musicBtn.innerText = "🎵 Bật nhạc Canon in D";
+                musicBtn.innerText = "🎵 Bật nhạc";
                 musicBtn.style.background = "linear-gradient(45deg, #4facfe, #00f2fe)";
+                isPlaying = false;
             } else {
-                music.play().then(() => {
-                    isPlaying = true;
-                    musicBtn.innerText = "🔇 Tắt nhạc";
-                    musicBtn.style.background = "linear-gradient(45deg, #ff9966, #ff5e62)";
-                }).catch(e => {
-                    alert("Bạn hãy bấm lại nút một lần nữa để phát nhạc nhé!");
-                });
+                music.play();
+                musicBtn.innerText = "🔇 Tắt nhạc";
+                musicBtn.style.background = "linear-gradient(45deg, #ff9966, #ff5e62)";
+                isPlaying = true;
             }
-            isPlaying = !isPlaying;
         }
     </script>
 </body>
