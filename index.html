@@ -36,7 +36,7 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* Màn hình chào để chạm mở & phát nhạc */
+        /* Màn hình chạm để phát nhạc tự động */
         #welcome-overlay {
             position: fixed;
             top: 0;
@@ -162,8 +162,8 @@
         }
 
         .btn-music {
-            background: linear-gradient(45deg, #4facfe, #00f2fe);
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            box-shadow: 0 4px 15px rgba(255, 94, 98, 0.4);
         }
 
         @keyframes fadeIn {
@@ -174,7 +174,7 @@
 </head>
 <body>
 
-    <!-- Màn hình chạm để phát nhạc -->
+    <!-- Màn hình chào mở thiệp & phát nhạc -->
     <div id="welcome-overlay" onclick="startExperience()">
         <div class="envelope">💌</div>
         <p>Bấm vào đây để mở món quà nhé! ✨</p>
@@ -196,13 +196,14 @@
         }
     </script>
 
-    <!-- File nhạc lấy trực tiếp từ GitHub của bạn -->
+    <!-- Đường dẫn nhạc đã được mã hóa đàng hoàng (nhận diện cả tên cũ lẫn tên mới) -->
     <audio id="bg-music" loop preload="auto">
-        <source src="nhac.mp3" type="audio/mp3">
+        <source src="canon.mp3" type="audio/mp3">
+        <source src="Canon%20in%20D%20-%20Pachelbel.mp3" type="audio/mp3">
     </audio>
 
     <div class="card">
-        <!-- 2 ảnh chính xác trên repo của bạn -->
+        <!-- 2 ảnh trên repo của bạn -->
         <div class="gallery">
             <div class="photo-container">
                 <img src="9d0b6a53-3bb2-4f3d-bfff-c50c0ce26924.jpg" alt="Ảnh 1">
@@ -215,7 +216,7 @@
         <h1>Chúc Bé Ngủ Ngon! 🌙✨</h1> 
         <p id="wish-text">
             Một ngày dài mệt mỏi trôi qua rồi, hãy gác lại mọi phiền muộn và chìm vào giấc ngủ thật sâu nhé. 
-            Chúc cậu có những giấc mơ thật đẹp! 🎶💤
+            Chúc cậu có những giấc mơ thật đẹp cùng giai điệu Canon in D! 🎶💤
         </p>
         
         <div class="btn-group">
@@ -229,7 +230,6 @@
         const musicBtn = document.getElementById('music-btn');
         let isPlaying = false;
 
-        // Tự động phát nhạc khi chạm vào màn hình mở thiệp
         function startExperience() {
             const overlay = document.getElementById('welcome-overlay');
             overlay.style.opacity = '0';
@@ -242,10 +242,10 @@
                 musicBtn.innerText = "🔇 Tắt nhạc";
             }).catch(err => {
                 console.log("Lỗi phát nhạc: ", err);
+                alert("Vui lòng kiểm tra lại nút bật nhạc!");
             });
         }
 
-        // Đổi câu chúc ngẫu nhiên
         function changeWish() {
             const wishes = [
                 "Mong cậu ngủ thật ngon và ngày mai thức dậy tràn đầy năng lượng! 🌟",
@@ -257,7 +257,6 @@
             document.getElementById('wish-text').innerText = randomWish;
         }
 
-        // Bật / Tắt nhạc
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
